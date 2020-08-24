@@ -120,6 +120,9 @@ class enemy(object):
                 self.walkCount += 1
 
             self.hitbox = (self.x, self.y, 150, 150)  # NEW
+
+            pygame.draw.rect(win, (0, 0, 0), (self.hitbox[0], self.hitbox[1] - 20, 50, 10))
+            pygame.draw.rect(win, (0, 255, 0), (self.hitbox[0], self.hitbox[1] - 20, 50 - (5 * (10 - self.health)), 10))
             pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)  # Draws the hit box around the enemy
 
 
