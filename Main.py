@@ -101,22 +101,28 @@ class enemy(object):
         self.path = [x, end]  # This will define where our enemy starts and finishes their path.
         self.walkCount = 0
         self.vel = 3
-        self.hitbox = (self.x , self.y , 150, 150      )
+        self.hitbox = (self.x , self.y , 150, 150)
+        self.health = 10  # NEW
+        self.visible = True  # NEW
 
     def draw(self, win):
         self.move()
-        if self.walkCount + 1 >= 33:  # Since we have 11 images for each animtion our upper bound is 33.
-            # We will show each image for 3 frames. 3 x 11 = 33.
-            self.walkCount = 0
+        if self.visible:  # NEW
+            if self.walkCount + 1 >= 33:  # Since we have 11 images for each animtion our upper bound is 33.
+                # We will show each image for 3 frames. 3 x 11 = 33.
+                self.walkCount = 0
 
-        if self.vel > 0:  # If we are moving to the right we will display our walkRight images
-            win.blit(self.walkRight[self.walkCount // 3], (self.x, self.y))
-            self.walkCount += 1
-        else:  # Otherwise we will display the walkLeft images
-            win.blit(self.walkLeft[self.walkCount // 3], (self.x, self.y))
-            self.walkCount += 1
-        self.hitbox = (self.x, self.y, 150, 150)  # NEW
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)  # Draws the hit box around the enemy
+            if self.vel > 0:  # If we are moving to the right we will display our walkRight images
+                win.blit(self.walkRight[self.walkCount // 3], (self.x, self.y))
+                self.walkCount += 1
+            else:  # Otherwise we will display the walkLeft images
+                win.blit(self.walkLeft[self.walkCount // 3], (self.x, self.y))
+                self.walkCount += 1
+
+            self.hitbox = (self.x, self.y, 150, 150)  # NEW
+            pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)  # Draws the hit box around the enemy
+
+
 
     def move(self):
         if self.vel > 0:  # If we are moving right
@@ -134,7 +140,11 @@ class enemy(object):
                 self.x += self.vel
                 self.walkCount = 0
 
-    def hit(self):
+    def hit(self): # ALL NEW
+        if self.health > 0:
+            self.health -= 1
+        else:
+            self.visible = False
         print('hit')
 
 def BomWindow():
@@ -166,10 +176,11 @@ while run:
             run = False
 
     for bullet in bullets:
-        if bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
-            if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
-                goblin.hit()
-                bullets.pop(bullets.index(bullet))
+        if goblin.visible == True:
+            if bullet.y - bullet.radius < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.radius > goblin.hitbox[1]:
+                if bullet.x + bullet.radius > goblin.hitbox[0] and bullet.x - bullet.radius < goblin.hitbox[0] + goblin.hitbox[2]:
+                    goblin.hit()
+                    bullets.pop(bullets.index(bullet))
 
     for bullet in bullets:
         if man.left:
