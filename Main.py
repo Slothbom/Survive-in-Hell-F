@@ -1,6 +1,7 @@
 import pygame
 
-pygame.init()
+
+#pygame.init()
 
 win = pygame.display.set_mode((1200, 600))
 
